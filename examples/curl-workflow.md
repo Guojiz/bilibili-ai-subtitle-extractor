@@ -2,6 +2,18 @@
 
 这个文件给能执行命令的 Agent 或人类用户使用。把示例中的 BV 号替换成目标视频即可。
 
+## 0. 先确定目标语言
+
+读取字幕前，先明确用户要哪种语言：中文、英文、双语，还是原语言。
+
+字幕选择顺序：
+
+1. 目标语言的人工字幕 / UP 主字幕。
+2. 目标语言的 B站 AI 字幕，例如 `ai-zh`。
+3. 如果没有目标语言字幕，但有原语言字幕，并且用户明确需要翻译，再读取原语言字幕后翻译。
+
+不要看到 `ai-zh` 就直接使用。很多转载视频、翻译视频或用心制作的视频，可能已经有更好的人工字幕或翻译字幕。
+
 ## 1. 获取视频信息
 
 ```bash
@@ -47,11 +59,19 @@ curl -s "https://api.bilibili.com/x/v2/dm/view?oid=${CID}&type=1" \
 cat dm-view.json | jq '.data.subtitle.subtitles'
 ```
 
-优先寻找 `lan` 为 `ai-zh` 的条目。
+每个字幕条目一般需要关注：
+
+```text
+lan
+lan_doc
+subtitle_url
+```
+
+选择目标语言时，优先选择非 AI 的人工字幕 / UP 主字幕；没有人工字幕时，再选择目标语言的 AI 字幕。
 
 ## 3. 下载字幕 JSON
 
-取出 `subtitle_url`。
+取出选中字幕的 `subtitle_url`。
 
 如果 URL 以 `//` 开头，补成 `https://`。
 
@@ -85,8 +105,9 @@ cat subtitle.json | jq -r '.body[].content' > subtitle-raw.txt
 - 补标点
 - 每 200 到 300 字分段
 - 结合视频简介中的章节
-- 修正明显错字
+- 修正明显错字；人工字幕不要过度改写
 - 保留关键数据和专有名词
+- 标明目标语言和字幕来源
 
 ## 5. 最小 Python 整理脚本
 
@@ -151,6 +172,7 @@ curl.exe -s "https://api.bilibili.com/x/web-interface/view?bvid=BV1SA7B6iEJg" `
 
 1. 视频标题
 2. 简介或章节
-3. 字幕正文
-4. 字幕来源说明
-5. 如果字幕不完整，说明限制
+3. 目标语言
+4. 字幕来源说明：人工字幕 / UP 主字幕 / Bilibili AI 字幕
+5. 字幕正文
+6. 如果字幕不完整，说明限制
