@@ -1,0 +1,40 @@
+name: Bug report
+description: Report a problem with the extraction recipe or cleanup flow
+title: "Bug: "
+labels: [bug]
+body:
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What went wrong?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Caption API discovery
+        - Browser automation
+        - Transcript cleanup
+        - Documentation
+        - Other
+  - type: textarea
+    id: steps
+    attributes:
+      label: Steps to reproduce
+      placeholder: "1. ...\n2. ...\n3. ..."
+  - type: textarea
+    id: expected
+    attributes:
+      label: Expected behavior
+  - type: textarea
+    id: actual
+    attributes:
+      label: Actual behavior
+  - type: textarea
+    id: redaction
+    attributes:
+      label: Redacted evidence
+      description: Redact cookies, tokens, account IDs, private URLs, and watch history before posting.
