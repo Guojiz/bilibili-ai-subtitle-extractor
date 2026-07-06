@@ -1,0 +1,28 @@
+name: Feature request
+description: Suggest an extraction, cleanup, or documentation improvement
+title: "Feature: "
+labels: [enhancement]
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What is hard to extract, clean, or understand?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed change
+    validations:
+      required: true
+  - type: textarea
+    id: example
+    attributes:
+      label: Public example
+      description: Use public examples only. Do not paste cookies, account data, or private transcript dumps.
+  - type: textarea
+    id: safety
+    attributes:
+      label: Safety notes
+      description: How does this avoid private data and access-control problems?
