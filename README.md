@@ -1,10 +1,10 @@
-# Bilibili AI Subtitle Extractor
+# Bilibili Subtitle Extractor for AI Agents
 
 > 让任何具备浏览器或 API 操作能力的 AI Agent，都能从 B站视频中读取已有字幕，并整理成可读文本。人工字幕 / UP 主字幕优先，B站 AI 字幕作为没有人工字幕时的后补方案。
 
-**Bilibili AI Subtitle Extractor** is an agent-agnostic recipe for reading existing Bilibili subtitles through browser/API access. Prefer creator-provided or human-made subtitles first, and use Bilibili AI subtitles only as a fallback when no better subtitle track exists.
+**Bilibili Subtitle Extractor for AI Agents** is an agent-agnostic recipe for reading existing Bilibili subtitles through browser/API access. Prefer creator-provided or human-made subtitles first, and use Bilibili AI subtitles only as a fallback when no better subtitle track exists.
 
-它不是 ChatGPT 专用 Skill，也不依赖某一个固定客户端。ChatGPT、Claude、Codex、本地 Agent、浏览器自动化工具，甚至一个只会发 HTTP 请求的执行环境，都可以按这个流程完成 B站视频转文字。
+本仓库原名保留为 `bilibili-ai-subtitle-extractor`，但实际流程并不要求机械优先使用 AI 字幕。它不是 ChatGPT 专用 Skill，也不依赖某一个固定客户端。ChatGPT、Claude、Codex、本地 Agent、浏览器自动化工具，甚至一个只会发 HTTP 请求的执行环境，都可以按这个流程完成 B站视频转文字。
 
 ## 这个项目解决什么
 
@@ -23,8 +23,6 @@
 2. 如果 B站已经有目标语言的人工字幕 / UP 主字幕，优先使用它。
 3. 如果没有人工字幕，再使用 B站提供的 AI 字幕。
 4. 如果已经有质量较好的目标语言字幕，不要再绕去拿另一种语言字幕重新翻译一遍。
-
-这个仓库把流程写成一份清晰的 Agent Recipe，让 AI 不必绕远路。
 
 ## 适用场景
 
@@ -73,7 +71,7 @@ Bilibili 的字幕接口相对更容易通过浏览器/API 自动化访问，因
 
 这个项目不是一个大而全的字幕下载器。
 
-它更像一张给 AI 的路线图：告诉 Agent 在面对 B站链接时，应该先去哪里拿字幕、如何选择字幕语言、如何判断人工字幕与 AI 字幕、如何整理、哪些坑不要踩。
+它更像一份给 AI 的路线图：告诉 Agent 在面对 B站链接时，应该先去哪里拿字幕、如何选择字幕语言、如何判断人工字幕与 AI 字幕、如何整理、哪些坑不要踩。
 
 如果你需要完整 CLI、批量下载、多格式导出，可以使用更成熟的字幕下载工具。
 
@@ -92,3 +90,7 @@ Bilibili 的字幕接口相对更容易通过浏览器/API 自动化访问，因
 ## 注意
 
 Bilibili 的接口和字幕字段可能变化。本项目提供的是一个优先路径，而不是永久保证。实际执行时，Agent 应根据返回 JSON 灵活检查字段。
+
+## 许可
+
+MIT License。详见 [LICENSE](LICENSE)。
