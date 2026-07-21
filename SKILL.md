@@ -237,3 +237,11 @@ YouTube 的字幕提取逻辑在概念上相似，但 YouTube 的人机验证、
 8. 字幕 URL 是否已经过期
 
 如果视频确实没有字幕，应诚实告诉用户：当前视频未检测到可用 B站字幕。
+
+## 浏览器内执行的额外坑（页面上下文 fetch 时）
+
+在浏览器页面上下文（扩展 content script、油猴脚本、`page.evaluate`）中执行本流程时，curl 能跑通不代表浏览器能跑通，额外注意：
+
+1. **Mixed Content**：`dm/view` 返回的 `subtitle_url` 常是 `http://` 开头，HTTPS 页面内直接 fetch 会被浏览器拦截。必须先把 `http://` 升级为 `https://`（`aisubtitle.hdslb.com` 支持 HTTPS）。
+2. **CORS + 凭证冲突**：B站字幕 CDN 返回 `Access-Control-Allow-Origin: *`。根据 CORS 规则，携带 Cookie（`credentials: 'include'`）的请求会被直接拒收，报错只是笼统的 `TypeError: Failed to fetch`。**下载字幕文件必须 `credentials: 'omit'`**；只有 `api.bilibili.com` 的接口才需要带 Cookie 获取登录态。
+3. B站对新会话/自动化会话偶尔返回「出错啦」页并二次跳转，浏览器自动化脚本需容忍导航导致的执行上下文销毁（重试读取即可）。
