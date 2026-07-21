@@ -1,0 +1,16 @@
+{
+  "manifest_version": 3,
+  "name": "Universal Subtitle Extractor (for AI Agents)",
+  "version": "0.2.0",
+  "description": "通用视频字幕提取：B站/YouTube 主动提取 + 全站网络嗅探 + textTracks 兜底。结果通过 window.__USE__ API 暴露，无 UI，供 AI Agent / 浏览器自动化读取。",
+  "minimum_chrome_version": "111",
+  "content_scripts": [
+    {
+      "matches": ["<all_urls>"],
+      "js": ["injector.js"],
+      "run_at": "document_start",
+      "world": "MAIN",
+      "all_frames": true
+    }
+  ]
+}

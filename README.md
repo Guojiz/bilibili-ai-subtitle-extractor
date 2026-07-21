@@ -77,6 +77,17 @@ Bilibili 的字幕接口相对更容易通过浏览器/API 自动化访问，因
 
 如果你需要让 AI 在对话中快速读取 B站视频内容，这个仓库会更轻。
 
+## 通用化扩展：Universal Subtitle Extractor
+
+社区贡献的可运行实现（见 [`universal/`](./universal/)）：把本仓库的 B站 API 流程扩展为**通用网页字幕提取器**，单文件、无 UI，字幕数据通过 `window.__USE__` API 暴露给 AI Agent：
+
+- B站：沿用本仓库 API 流程（页面内执行自带登录态，人工字幕优先）
+- 任意站点：hook `fetch`/`XMLHttpRequest` 网络嗅探 + `textTracks` 兜底（思路借鉴沉浸式翻译开源油猴脚本）
+- YouTube：`captionTracks` 路径（**experimental / 待实测**）
+- 提供油猴脚本与 MV3 扩展两种形态，也可被 Playwright `add_init_script()` 直接注入
+
+详见 [`universal/README.md`](./universal/README.md)。
+
 ## 贡献与合作
 
 欢迎提交 Issue、PR 或新的执行样例，尤其是：
