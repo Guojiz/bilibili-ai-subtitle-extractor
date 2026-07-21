@@ -26,5 +26,6 @@ fs.writeFileSync(path.join(root, 'dist', 'universal-subtitle-extractor.user.js')
 console.log('built dist/universal-subtitle-extractor.user.js, version', version);
 
 // 扩展：复制 injector.js 到 extension/
+fs.mkdirSync(path.join(root, 'extension'), { recursive: true });
 fs.copyFileSync(path.join(root, 'src', 'injector.js'), path.join(root, 'extension', 'injector.js'));
 console.log('copied extension/injector.js');
