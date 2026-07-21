@@ -2,19 +2,20 @@
 
 Thank you for considering a contribution.
 
-This project documents an agent-friendly way to extract and clean Bilibili subtitles from existing caption APIs, without video download or ASR. Contributions should make the recipe easier to reproduce, safer to run, and clearer for AI-assisted workflows.
+This project is a **platform-agnostic** agent recipe: a shared pipeline for reading existing online-video captions/transcripts, plus optional site adapters (Bilibili, YouTube, generic web discovery). Do not prioritize video download or ASR. Contributions should improve the common pipeline or add honest, reproducible adapters.
 
 ## Good contributions
 
 Useful contributions include:
 
-- clearer extraction steps;
-- API behavior notes;
-- safer browser automation guidance;
-- transcript cleaning improvements;
+- improvements to the **shared pipeline** (track selection, cue model, cleanup, output metadata);
+- new or clearer **site adapters** that map a platform into the shared cue model;
+- access-fallback notes (e.g. local browser when the agent runtime cannot reach a site);
 - examples using public, non-sensitive videos;
-- error handling notes;
+- error handling and honest scope notes (do not claim untested platforms are fully supported);
 - documentation fixes.
+
+Prefer extending adapters over hard-coding a single platform as the product center.
 
 ## Do not contribute
 

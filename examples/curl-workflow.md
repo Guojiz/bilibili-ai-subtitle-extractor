@@ -1,6 +1,13 @@
-# 可复制的 curl 流程
+# 站点适配示例：Bilibili（curl）
 
-这个文件给能执行命令的 Agent 或人类用户使用。把示例中的 BV 号替换成目标视频即可。
+本仓库的**产品是通用字幕管线**；本文件只是其中一条**已验证的站点适配**，方便 Agent 照抄命令。
+
+给**能执行命令的 Agent**使用。把 BV 号换成目标视频即可。  
+基于 B 站公开接口字段的独立示例，不依赖任何第三方浏览器扩展。
+
+通用原则与其它适配见 [`../SKILL.md`](../SKILL.md)。  
+YouTube 适配见 [`youtube-webbridge.md`](./youtube-webbridge.md)。  
+调用方见 [`gitlearnos-caller.md`](./gitlearnos-caller.md)。
 
 ## 0. 先确定目标语言
 

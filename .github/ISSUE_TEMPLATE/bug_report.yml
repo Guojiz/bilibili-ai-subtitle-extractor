@@ -15,8 +15,10 @@ body:
     attributes:
       label: Area
       options:
-        - Caption API discovery
-        - Browser automation
+        - Bilibili API path
+        - YouTube transcript path
+        - Kimi WebBridge fallback
+        - Generic web checklist
         - Transcript cleanup
         - Documentation
         - Other

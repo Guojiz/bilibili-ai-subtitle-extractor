@@ -15,17 +15,48 @@
 
 同一字幕从多条路径被发现时自动去重（api > tracktag > texttrack > network）。SPA 站内跳转自动清空并重扫。
 
-## 安装（三选一）
+## 注入路径（按推荐优先级）
 
-**A. 油猴脚本**（最简单）：先运行 `node build.js` 生成 `dist/universal-subtitle-extractor.user.js`，Tampermonkey / Violentmonkey 新建脚本并粘贴全文。
+**1. WebBridge `evaluate` 按需注入 —— 主路径，✅ 已实测（YouTube 真实页面）**
 
-**B. MV3 扩展**：先运行 `node build.js` 生成 `extension/injector.js`，然后 Chrome → `chrome://extensions` → 开发者模式 → 加载已解压的扩展程序 → 选择 `extension/` 目录。
+Agent 驱动用户真实浏览器：免安装、带用户登录态、无需用户预装任何东西。先 `node build.js` 生成 `dist/universal-subtitle-extractor.user.js`，然后：
 
-**C. Playwright / Agent 浏览器注入**（自动化场景，无需装任何东西）：
+```text
+navigate → 视频页（新标签）
+evaluate → 注入 user.js 全文          # 重复注入安全（内置防重入守卫）
+evaluate → 提取（单次往返，见下）
+```
+
+单次 evaluate 完成等待 + 选轨 + 取正文的模式：
+
+```javascript
+(async () => {
+  await window.__USE__.waitFor(1, 20000);
+  return JSON.stringify({
+    meta: window.__USE__.meta(),
+    tracks: window.__USE__.list(),
+    text: window.__USE__.text()
+  });
+})()
+```
+
+**2. Playwright / agent-browser `add_init_script` —— ✅ 已实测（B站真实视频 + 全部自动化测试）**
+
+Agent 自带浏览器实例的自动化场景，无需装任何东西：
 
 ```python
 context.add_init_script(path="universal-subtitle-extractor.user.js")
 ```
+
+**3. MV3 扩展 —— ✅ B站实测（Chromium 加载扩展）；人机常驻形态**
+
+先运行 `node build.js` 生成 `extension/injector.js`，然后 Chrome → `chrome://extensions` → 开发者模式 → 加载已解压的扩展程序 → 选择 `extension/` 目录。
+
+按需注入（路径 1、2）的三个注意点：
+
+1. **生命周期 = 当前页面加载**：整页刷新后需重新注入；YouTube 等 SPA 站内跳转不丢注入（已监听 `yt-navigate-finish` 自动重扫）。
+2. **嗅探只能抓到注入后的请求**：navigate 后尽快注入；字幕来晚了由 `waitFor` + 自动开 CC 回退兜底（YouTube `baseUrl` 直取会返回空 body，这是预期行为，嗅探层会接棒）。
+3. `evaluate` 运行在页面主世界（MAIN world），hook 对页面自身的播放器请求生效。
 
 ## API：`window.__USE__`
 
