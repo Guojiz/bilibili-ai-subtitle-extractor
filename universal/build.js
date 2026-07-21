@@ -10,7 +10,7 @@ const version = (injector.match(/version:\s*'([\d.]+)'/) || [null, '0.0.0'])[1];
 const header = `// ==UserScript==
 // @name         Universal Subtitle Extractor (for AI Agents)
 // @name:zh-CN   通用字幕提取器（AI Agent 专用）
-// @namespace    https://github.com/Guojiz/bilibili-ai-subtitle-extractor
+// @namespace    https://github.com/Guojiz/ai-subtitle-extractor
 // @version      ${version}
 // @description  通用视频字幕提取：B站/YouTube 主动提取 + 全站网络嗅探 + textTracks 兜底。结果通过 window.__USE__ API 暴露给 AI Agent，无 UI。
 // @match        *://*/*

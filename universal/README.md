@@ -1,6 +1,6 @@
 # Universal Subtitle Extractor（通用字幕提取器 · AI Agent 专用）
 
-> 在 [bilibili-ai-subtitle-extractor](https://github.com/Guojiz/bilibili-ai-subtitle-extractor) 的 B 站 API 流程基础上，扩展为**通用网页字幕提取**。无 UI、无打扰，字幕数据通过 `window.__USE__` API 暴露，供 AI Agent / 浏览器自动化直接读取。
+> 在 [ai-subtitle-extractor](https://github.com/Guojiz/ai-subtitle-extractor) 的 B 站 API 流程基础上，扩展为**通用网页字幕提取**。无 UI、无打扰，字幕数据通过 `window.__USE__` API 暴露，供 AI Agent / 浏览器自动化直接读取。
 > 通用嗅探与站点规则的思路借鉴了沉浸式翻译（immersive-translate）开源的油猴脚本 `video-subtitle/inject.js` 及其站点配置。
 
 ## 提取路径（四层，自动叠加）

@@ -70,4 +70,4 @@ Site adapters welcome: follow the shared pipeline and the `Cue` model, use publi
 
 ## License
 
-MIT — see [LICENSE](./LICENSE). Formerly `bilibili-ai-subtitle-extractor`; old URLs redirect here.
+MIT — see [LICENSE](./LICENSE).

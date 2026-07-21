@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Build userscripts/online-video-subtitle-export.user.js from page_inject/export_core.js + UI shell."""
+"""Build userscripts/ai-subtitle-extractor.user.js from page_inject/export_core.js + UI shell."""
 
 from __future__ import annotations
 
@@ -7,14 +7,14 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 CORE = ROOT / "scripts" / "page_inject" / "export_core.js"
-OUT = ROOT / "userscripts" / "online-video-subtitle-export.user.js"
+OUT = ROOT / "userscripts" / "ai-subtitle-extractor.user.js"
 
 HEADER = """// ==UserScript==
-// @name         Online Video Subtitle Export (Agent Recipe)
-// @namespace    https://github.com/Guojiz/bilibili-ai-subtitle-extractor
+// @name         AI Subtitle Extractor
+// @namespace    https://github.com/Guojiz/ai-subtitle-extractor
 // @version      0.3.0
 // @description  Platform-agnostic page inject: export existing captions (YouTube/Bilibili/general discovery). Works with Tampermonkey and agent-browser. Standalone. Not affiliated with commercial translate extensions.
-// @author       bilibili-ai-subtitle-extractor contributors
+// @author       AI Subtitle Extractor contributors
 // @match        *://*/*
 // @grant        none
 // @run-at       document-start

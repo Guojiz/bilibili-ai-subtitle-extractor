@@ -4,7 +4,7 @@
 
 ```bash
 python scripts/build_userscript.py
-# → online-video-subtitle-export.user.js
+# → ai-subtitle-extractor.user.js
 ```
 
 核文件：[`../scripts/page_inject/export_core.js`](../scripts/page_inject/export_core.js)
@@ -12,7 +12,7 @@ python scripts/build_userscript.py
 ## 安装
 
 1. Tampermonkey / Violentmonkey  
-2. 导入 `online-video-subtitle-export.user.js`（`@match *://*/*`，通用）  
+2. 导入 `ai-subtitle-extractor.user.js`（`@match *://*/*`，通用）  
 3. 打开任意视频页 → 右下角导出 / 复制 / JSON  
 
 ## Agent 更推荐 agent-browser

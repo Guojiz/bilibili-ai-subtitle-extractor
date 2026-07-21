@@ -70,4 +70,4 @@
 
 ## 许可
 
-MIT，见 [LICENSE](./LICENSE)。原名 `bilibili-ai-subtitle-extractor`，旧链接自动跳转。
+MIT，见 [LICENSE](./LICENSE)。
