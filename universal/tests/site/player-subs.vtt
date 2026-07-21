@@ -1,0 +1,10 @@
+WEBVTT
+
+00:00:00.500 --> 00:00:02.000
+Hello world, this is a sniffed subtitle.
+
+00:00:02.500 --> 00:00:04.000
+Second cue from fetch.
+
+00:00:04.500 --> 00:00:06.000
+Third cue, generic path works.

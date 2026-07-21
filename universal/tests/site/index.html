@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head><meta charset="utf-8"><title>字幕嗅探测试页</title></head>
+<body>
+<h1>Generic Subtitle Sniff Test</h1>
+<video controls width="480" crossorigin="anonymous">
+  <track kind="subtitles" srclang="en" label="English track tag" src="track-tag.vtt" default>
+</video>
+<script>
+// 模拟站点播放器：fetch 加载 VTT
+fetch('player-subs.vtt').then(r => r.text()).then(t => console.log('vtt loaded', t.length));
+// 模拟站点播放器：XHR 加载 SRT
+const x = new XMLHttpRequest();
+x.open('GET', 'player-subs.srt');
+x.send();
+</script>
+</body>
+</html>
