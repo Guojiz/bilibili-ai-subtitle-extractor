@@ -10,6 +10,7 @@ USERJS = str(Path(__file__).resolve().parent.parent / "dist" / "universal-subtit
 
 JSON3 = {"events": [
     {"tStartMs": 0, "dDurationMs": 1500, "segs": [{"utf8": "Hello "}, {"utf8": "world"}]},
+    {"tStartMs": 1500, "aAppend": 1, "segs": [{"utf8": " (append fragment)"}]},
     {"tStartMs": 1600, "dDurationMs": 1400, "segs": [{"utf8": "second\n"}, {"utf8": "cue"}]},
     {"tStartMs": 3200, "dDurationMs": 1000, "segs": [{"utf8": "third"}]},
 ]}

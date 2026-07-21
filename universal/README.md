@@ -71,7 +71,7 @@ tests/                 # Playwright 实测脚本 + 本地测试页
 
 ## 已知限制
 
-- YouTube 的 `captionTracks` 路径按官方播放器结构实现并已通过 json3 解析器单元测试，但本环境无法访问 YouTube，建议在你的网络里实测一个带字幕的视频。
+- YouTube 路径（json3 解析、captionTracks 全链路、空 body 自动开 CC 回退）已通过 mock 页面端到端测试（`tests/test_youtube.py`，无需访问 YouTube 即可复跑）；真实 YouTube 页面尚未实测，建议在你的网络里验证一个带字幕的视频。
 - Netflix 等 DRM 站点需要 hook `JSON.parse` 抓 `timedtexttracks`（沉浸式翻译的做法），暂未实现，欢迎 PR。
 - 直播实时字幕（`type: live`）不在本版范围。
 

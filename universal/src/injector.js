@@ -111,6 +111,8 @@
     var cues = [];
     events.forEach(function (ev) {
       if (!ev.segs || typeof ev.tStartMs !== 'number') return;
+      // aAppend 事件是上一条的追加碎片（无独立时长），不跳过会产生重复/乱序 cue
+      if (ev.aAppend === 1 && !ev.dDurationMs) return;
       var t = ev.segs.map(function (s) { return s.utf8 || ''; }).join('');
       t = cleanText(t.replace(/\n/g, ' '));
       if (!t) return;
@@ -398,8 +400,9 @@
   /* ------------------------------------------------------------------ *
    * 主动提取器：YouTube（captionTracks，借鉴沉浸式翻译 youtube 处理器
    * 使用 #movie_player.getPlayerResponse() 的思路）
-   * ⚠️ EXPERIMENTAL / 待测试：json3 解析器已通过单元测试，但完整链路
-   * 尚未在真实 YouTube 页面验证（开发环境无法访问 YouTube）。
+   * ⚠️ EXPERIMENTAL / 待测试：json3 解析与 captionTracks 全链路已通过
+   * mock 页面端到端测试（tests/test_youtube.py），真实 YouTube 页面
+   * 尚未验证（开发环境无法访问 YouTube）。
    * ------------------------------------------------------------------ */
   function ytPlayerResponse() {
     try {
@@ -412,9 +415,26 @@
     return window.ytInitialPlayerResponse || null;
   }
 
+  // 直取 captionTracks.baseUrl 常返回空 body（YouTube 要求带播放器上下文
+  // 的请求）。此时程序化打开 CC，让播放器自己发 timedtext 请求，
+  // 由网络嗅探层（fetch/XHR hook）捕获真实字幕响应。
+  function ytEnableCaptions(track) {
+    try {
+      var p = document.querySelector('#movie_player');
+      if (p && p.loadModule) p.loadModule('captions');
+      if (p && p.setOption && track) {
+        p.setOption('captions', 'track', { languageCode: track.languageCode, kind: track.kind || undefined });
+      }
+    } catch (e) {}
+    try {
+      var btn = document.querySelector('.ytp-subtitles-button, button[aria-label*="字幕"], button[aria-label*="ubtitle" i], button[aria-label*="Captions" i]');
+      if (btn && btn.getAttribute('aria-pressed') === 'false') btn.click();
+    } catch (e) {}
+  }
+
   async function scanYouTube() {
     if (!/youtube\.com|youtube-nocookie\.com/.test(location.hostname)) return false;
-    if (location.pathname.indexOf('/watch') !== 0 && location.pathname.indexOf('/embed/') !== 0) return false;
+    if (!/^\/(watch|shorts\/|embed\/|live\/)/.test(location.pathname)) return false;
     try {
       var pr = ytPlayerResponse();
       var renderer = pr && pr.captions && pr.captions.playerCaptionsTracklistRenderer;
@@ -428,15 +448,18 @@
         send('status', { level: 'info', msg: 'YouTube：该视频未检测到字幕轨道' });
         return true;
       }
+      var got = 0, empty = 0;
       for (var i = 0; i < tracks.length; i++) {
         var t = tracks[i];
         try {
           var url = t.baseUrl + (t.baseUrl.indexOf('fmt=') === -1 ? '&fmt=json3' : '');
           var text = await (window.__USE_ORIGINAL_FETCH__ || window.fetch)(url, { credentials: 'include' }).then(function (r) { return r.text(); });
+          if (!text || !text.trim()) { empty++; continue; } // baseUrl 直取常见空 body
           var cues = null, format = 'youtube-json3';
           try { cues = parseYoutubeJson3(JSON.parse(text)); } catch (e) {}
           if (!cues) { cues = parseTTML(text); format = 'srv-xml'; }
           if (cues && cues.length) {
+            got++;
             var label = (t.name && (t.name.simpleText || (t.name.runs || []).map(function (r) { return r.text; }).join(''))) || t.languageCode || '字幕';
             reportTrack({
               site: 'youtube',
@@ -450,6 +473,12 @@
             });
           }
         } catch (e) { log('YouTube 字幕下载失败', e); }
+      }
+      if (!got) {
+        ytEnableCaptions(tracks[0]);
+        send('status', { level: 'info', msg: empty
+          ? 'YouTube：baseUrl 直取返回空，已自动打开 CC，改由网络嗅探捕获播放器的字幕请求'
+          : 'YouTube：字幕下载失败，已自动打开 CC，改由网络嗅探捕获播放器的字幕请求' });
       }
     } catch (e) {
       send('status', { level: 'warn', msg: 'YouTube 字幕提取失败：' + e.message });
