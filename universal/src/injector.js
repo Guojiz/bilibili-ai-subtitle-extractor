@@ -340,7 +340,7 @@
   })();
 
   /* ------------------------------------------------------------------ *
-   * 主动提取器：Bilibili（沿用 bilibili-ai-subtitle-extractor 仓库的 API 流程，
+   * 主动提取器：Bilibili（沿用 ai-subtitle-extractor 仓库的 API 流程，
    * 在页面上下文执行，自动带 Cookie，人工/UP主字幕优先，AI 字幕后补）
    * ------------------------------------------------------------------ */
   function jget(url, credentials) {
@@ -685,7 +685,7 @@
         cur = '';
       }
       if (!cur) curStart = c.start;
-      cur += (cur && /[\u4e00-\u9fff]$/.test(cur) && /^[\u4e00-\u9fff]/.test(t) ? '' : ' ') + t;
+      cur += (cur && /[一-鿿]$/.test(cur) && /^[一-鿿]/.test(t) ? '' : ' ') + t;
       prevEnd = c.end;
     });
     if (cur) paras.push(withTime ? '[' + fmtTime(curStart, '.').slice(0, 8) + '] ' + cur : cur);
