@@ -197,11 +197,23 @@
   }
 
   function guessLang(url) {
-    var m = String(url || '').match(/[?&](?:lang|tlang|hl|language|locale|srclang)=([a-zA-Z-]{2,10})/);
+    // 字幕语言参数优先（lang/tlang/srclang）；hl 是界面语言，只在无字幕参数时兜底
+    // （实测 YouTube timedtext URL 同时带 hl=zh-CN 和 lang=de-DE，先匹配 hl 会标错语言）
+    var m = String(url || '').match(/[?&](?:lang|tlang|srclang)=([a-zA-Z-]{2,10})/);
+    if (m) return m[1].toLowerCase();
+    m = String(url || '').match(/[?&](?:hl|language|locale)=([a-zA-Z-]{2,10})/);
     if (m) return m[1].toLowerCase();
     m = String(url || '').match(/[.\/_-](zh[-_](?:CN|TW|Hans|Hant)?|en[-_](?:US|GB)?|ja|ko|es|fr|de|ru|pt|ar|th|vi|id)(?=[.\/?&_-]|$)/i);
     if (m) return m[1].toLowerCase().replace('_', '-');
     return '';
+  }
+
+  // 站点名归一：已知站点用固定名（与主动提取器一致），其余用 hostname
+  function siteName() {
+    var h = location.hostname;
+    if (/youtube\.com$|youtube-nocookie\.com$/.test(h)) return 'youtube';
+    if (/bilibili\.com$/.test(h)) return 'bilibili';
+    return h;
   }
 
   /* ------------------------------------------------------------------ *
@@ -264,7 +276,7 @@
     var parsed = parseByContent(text, url);
     if (!parsed) return;
     reportTrack({
-      site: location.hostname,
+      site: siteName(),
       url: url,
       lang: guessLang(url),
       label: '网络嗅探 · ' + (parsed.format || '?'),
@@ -479,6 +491,17 @@
         send('status', { level: 'info', msg: empty
           ? 'YouTube：baseUrl 直取返回空，已自动打开 CC，改由网络嗅探捕获播放器的字幕请求'
           : 'YouTube：字幕下载失败，已自动打开 CC，改由网络嗅探捕获播放器的字幕请求' });
+        // 播放器 UI 可能尚未就绪（页面加载早期注入时 CC 按钮还不存在），
+        // 嗅探一直无结果则有限重试
+        if (ytRetries < 4) {
+          ytRetries++;
+          setTimeout(function () {
+            var have = Array.from(REGISTRY.values()).some(function (t) { return t.site === 'youtube'; });
+            if (!have && location.href === lastUrl) scanYouTube();
+          }, 4000);
+        }
+      } else {
+        ytRetries = 0;
       }
     } catch (e) {
       send('status', { level: 'warn', msg: 'YouTube 字幕提取失败：' + e.message });
@@ -508,7 +531,7 @@
                 }
                 if (cues.length >= 2) {
                   reportTrack({
-                    site: location.hostname,
+                    site: siteName(),
                     url: 'texttrack://' + vi + '/' + idx,
                     lang: (track.language || '').toLowerCase(),
                     label: 'textTracks · ' + (track.label || track.language || ('轨道' + (idx + 1))),
@@ -541,7 +564,7 @@
               var parsed = parseByContent(text, src);
               if (parsed) {
                 reportTrack({
-                  site: location.hostname,
+                  site: siteName(),
                   url: src,
                   lang: (el.srclang || '').toLowerCase(),
                   label: '<track> · ' + (el.label || el.srclang || ('轨道' + (idx + 1))),
@@ -564,6 +587,7 @@
    * ------------------------------------------------------------------ */
   var lastUrl = location.href;
   var scanTimer = null;
+  var ytRetries = 0; // YouTube 空 body 回退的有限重试计数
 
   function scanAll() {
     clearTimeout(scanTimer);
@@ -586,6 +610,7 @@
     reported = {};
     REGISTRY.clear();
     PAGE_META = {};
+    ytRetries = 0;
     send('reset', { url: location.href });
     scanAll();
   }
