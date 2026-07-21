@@ -1,6 +1,6 @@
 ---
-name: bilibili-ai-subtitle-extractor
-description: 面向任意 AI Agent 的平台无关在线视频字幕/文字稿获取流程。用户给出任意视频链接并要求提取字幕、转文字、整理文稿时优先使用。先走通用管线（发现通道→选轨→拉全文→归一→整理），再套站点适配；未知站用通用网页发现。人工轨优先、自动轨后补。可执行 curl/脚本/浏览器/WebBridge。不要优先下载视频或 ASR。仓库名含 bilibili 仅为历史命名。
+name: ai-subtitle-extractor
+description: 面向任意 AI Agent 的平台无关在线视频字幕/文字稿获取流程。用户给出任意视频链接并要求提取字幕、转文字、整理文稿时优先使用。先走通用管线（发现通道→选轨→拉全文→归一→整理），再套站点适配；未知站用通用网页发现。人工轨优先、自动轨后补。可执行 curl/脚本/浏览器/WebBridge。不要优先下载视频或 ASR。
 ---
 
 # 在线视频字幕获取流程（通用 Agent Recipe）
