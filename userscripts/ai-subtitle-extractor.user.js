@@ -40,7 +40,7 @@
   function looksCjk(text) {
     let n = 0;
     for (const ch of text) {
-      if (ch >= "一" && ch <= "鿿") n++;
+      if (ch >= "\u4e00" && ch <= "\u9fff") n++;
     }
     return n >= Math.max(1, (text.length / 4) | 0);
   }

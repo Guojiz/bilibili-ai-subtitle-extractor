@@ -685,7 +685,7 @@
         cur = '';
       }
       if (!cur) curStart = c.start;
-      cur += (cur && /[一-鿿]$/.test(cur) && /^[一-鿿]/.test(t) ? '' : ' ') + t;
+      cur += (cur && /[\u4e00-\u9fff]$/.test(cur) && /^[\u4e00-\u9fff]/.test(t) ? '' : ' ') + t;
       prevEnd = c.end;
     });
     if (cur) paras.push(withTime ? '[' + fmtTime(curStart, '.').slice(0, 8) + '] ' + cur : cur);
