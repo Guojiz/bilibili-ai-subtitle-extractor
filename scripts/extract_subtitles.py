@@ -30,6 +30,7 @@ from lib.agent_browser import (  # noqa: E402
     extract_with_agent_browser,
 )
 from lib.bilibili import extract_bilibili  # noqa: E402
+from lib.backblaze import B2Config, object_key, upload_bytes  # noqa: E402
 from lib.detect import detect_adapter  # noqa: E402
 from lib.general import extract_general  # noqa: E402
 from lib.models import ExtractResult  # noqa: E402
@@ -168,6 +169,21 @@ def main(argv: list[str] | None = None) -> int:
         action="store_true",
         help="Show browser window when using agent-browser",
     )
+    p.add_argument(
+        "--b2-upload",
+        action="store_true",
+        help="Upload the emitted transcript artifact to Backblaze B2",
+    )
+    p.add_argument(
+        "--b2-prefix",
+        default="transcripts",
+        help="Backblaze object-key prefix (default: transcripts)",
+    )
+    p.add_argument(
+        "--b2-dry-run",
+        action="store_true",
+        help="Print the planned Backblaze object key without uploading",
+    )
     args = p.parse_args(argv)
 
     try:
@@ -208,6 +224,43 @@ def main(argv: list[str] | None = None) -> int:
             json.dumps([c.to_dict() for c in result.cues], ensure_ascii=False, indent=2),
             encoding="utf-8",
         )
+
+    if (args.b2_upload or args.b2_dry_run) and result.ok:
+        filename = Path(args.output).name if args.output else (
+            "transcript.json" if args.json else "transcript.md"
+        )
+        raw = payload.encode("utf-8")
+        if args.b2_dry_run:
+            print(
+                json.dumps(
+                    {
+                        "provider": "Backblaze B2",
+                        "dry_run": True,
+                        "key": object_key(args.b2_prefix, filename, raw),
+                    },
+                    indent=2,
+                ),
+                file=sys.stderr,
+            )
+        else:
+            receipt = upload_bytes(
+                raw,
+                filename=filename,
+                content_type=(
+                    "application/json; charset=utf-8"
+                    if args.json
+                    else "text/markdown; charset=utf-8"
+                ),
+                metadata={
+                    "platform": result.platform,
+                    "language": result.language,
+                    "adapter": result.adapter,
+                    "cue-count": str(len(result.cues)),
+                },
+                prefix=args.b2_prefix,
+                config=B2Config.from_env(),
+            )
+            print(json.dumps(receipt, indent=2), file=sys.stderr)
 
     return 0 if result.ok else 1
 
