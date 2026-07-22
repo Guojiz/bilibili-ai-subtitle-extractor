@@ -64,6 +64,21 @@ Drive the user's real browser (their login session) through a bridge like Kimi W
 | [`scripts/`](./scripts/) | Reference CLI + page-inject core (`__ovsExportSubtitle`) |
 | [`examples/`](./examples/) | Adapter walkthroughs: YouTube + browser fallback, Bilibili curl |
 
+## Optional Backblaze B2 archive
+
+An extracted Markdown or JSON transcript can be archived in Backblaze B2 via
+its S3-compatible API. The default workflow remains local-only; uploading is
+explicit and credentials are read from environment variables.
+
+```bash
+python scripts/extract_subtitles.py <video-url> --json -o result.json --b2-upload
+```
+
+The integration has unit tests and a credential-free dry-run. A live B2 upload
+must be verified with the project owner's restricted bucket credentials before
+it is described as live in a competition submission. See
+[`docs/BACKBLAZE.md`](./docs/BACKBLAZE.md).
+
 ## Contributing
 
 Site adapters welcome: follow the shared pipeline and the `Cue` model, use public examples, label "verified" or "experimental" honestly. See [CONTRIBUTING.md](./CONTRIBUTING.md).
